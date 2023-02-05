@@ -203,7 +203,6 @@ export default {
       axios
           .post(this.server_url + "/upload", param, config)
           .then((response) => {
-            window.console.log(response.data)
             this.percentage = 100;
             clearInterval(timer);
             this.url_1 = response.data.image_url;
