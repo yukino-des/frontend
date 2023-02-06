@@ -7,4 +7,8 @@ module.exports = {
     productionSourceMap: undefined,
     publicPath: './',
     runtimeCompiler: undefined,
+    // append
+    devServer: {
+        disableHostCheck: true
+    }
 }
