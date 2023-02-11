@@ -1,6 +1,6 @@
 <template>
-  <div id="Content">
-    <el-dialog title="AI Predicting"
+  <div id="content">
+    <el-dialog title="AI Detecting"
                :visible.sync="dialogTableVisible"
                :show-close="false"
                :close-on-press-escape="false"
@@ -8,30 +8,30 @@
                :close-on-click-modal="false"
                :center="true">
       <el-progress :percentage="percentage"></el-progress>
-      <span slot="footer" class="dialog-footer">Please Waiting</span>
+      <span slot="footer" class="dialog-footer">Please waiting.</span>
     </el-dialog>
-
     <div id="CT">
       <div id="CT_image">
-        <el-card id="CT_image_1"
-                 class="box-card"
+        <el-card id="CT_image1"
+                 class="box_card"
                  style="border-radius: 8px; width: 800px; height: 360px; margin-bottom: -30px;">
-          <div class="demo-image__preview1">
+          <!-- left box -->
+          <div class="demo_image__preview1">
             <div v-loading="loading"
                  element-loading-text="Uploading"
                  element-loading-spinner="el-icon-loading">
-              <el-image :src="url_1"
-                        class="image_1"
-                        :preview-src-list="srcList"
+              <el-image :src="url1"
+                        class="image1"
+                        :preview-src-list="srcList1"
                         style="border-radius: 3px 3px 0 0">
                 <div slot="error">
                   <div slot="placeholder" class="error">
-                    <el-button v-show="showbutton"
+                    <el-button v-show="showButton"
                                type="primary"
                                icon="el-icon-upload"
                                class="download_bt"
-                               v-on:click="true_upload">
-                      Upload Image
+                               v-on:click="trueUpload1">
+                      Upload
                       <input ref="upload"
                              style="display: none"
                              name="file"
@@ -42,24 +42,25 @@
                 </div>
               </el-image>
             </div>
-            <div class="img_info_1" style="border-radius: 0 0 5px 5px">
-              <span style="color: white">Original Image</span>
+            <div class="img_info1" style="border-radius: 0 0 5px 5px">
+              <span style="color: white">Original</span>
             </div>
           </div>
-          <div class="demo-image__preview2">
+          <!-- right box -->
+          <div class="demo_image__preview2">
             <div v-loading="loading"
-                 element-loading-text="Processing, please be patient ^_^"
+                 element-loading-text="Please be patient."
                  element-loading-spinner="el-icon-loading">
-              <el-image :src="url_2"
-                        class="image_1"
-                        :preview-src-list="srcList1"
+              <el-image :src="url2"
+                        class="image1"
+                        :preview-src-list="srcList2"
                         style="border-radius: 3px 3px 0 0">
                 <div slot="error">
-                  <div slot="placeholder" class="error">{{ wait_return }}</div>
+                  <div slot="placeholder" class="error">{{ waitReturn }}</div>
                 </div>
               </el-image>
             </div>
-            <div class="img_info_1" style="border-radius: 0 0 5px 5px">
+            <div class="img_info1" style="border-radius: 0 0 5px 5px">
               <span style="color: white">Detection Result</span>
             </div>
           </div>
@@ -68,14 +69,14 @@
       <div id="info_patient">
         <el-card style="border-radius: 8px">
           <div slot="header" class="clearfix">
-            <span>Detection Target</span>
+            <span>Detection Details</span>
             <el-button style="margin-left: 35px"
-                       v-show="!showbutton"
+                       v-show="!showButton"
                        type="primary"
                        icon="el-icon-upload"
                        class="download_bt"
-                       v-on:click="true_upload2">
-              Reselect Image
+                       v-on:click="trueUpload2">
+              Reselect
               <input ref="upload2"
                      style="display: none"
                      name="file"
@@ -84,27 +85,28 @@
             </el-button>
           </div>
           <el-tabs v-model="activeName">
-            <el-tab-pane label="Detected Target" name="first">
-              <el-table :data="feature_list"
+            <el-tab-pane label="Detected Targets" name="first">
+              <el-table :data="featureList1"
                         height="390"
                         border
                         style="width: 750px; text-align: center"
                         v-loading="loading"
-                        element-loading-text="The data is being processed, please be patient ^_^"
+                        element-loading-text="Please be patient."
                         element-loading-spinner="el-icon-loading"
                         lazy>
                 <el-table-column label="Target Category" width="250px">
-                  <template slot-scope="scope">
+                  <template v-slot:default="scope">
                     <span>{{ scope.row[2] }}</span>
                   </template>
                 </el-table-column>
                 <el-table-column label="Target Size" width="250px">
-                  <template slot-scope="scope">
+                  <!--`v-slot:default` is simplify to `#default`-->
+                  <template #default="scope">
                     <span>{{ scope.row[0] }}</span>
                   </template>
                 </el-table-column>
                 <el-table-column label="Confidence" width="250px">
-                  <template slot-scope="scope">
+                  <template #default="scope">
                     <span>{{ scope.row[1] }}</span>
                   </template>
                 </el-table-column>
@@ -121,29 +123,28 @@
 import axios from "axios";
 
 export default {
-  name: "Content",
+  name: "content",
   data() {
     return {
-      server_url: "http://127.0.0.1:8081",
+      serverUrl: "http://127.0.0.1:8081",
       activeName: "first",
       active: 0,
       centerDialogVisible: true,
-      url_1: "",
-      url_2: "",
+      url1: "",
+      url2: "",
       textarea: "",
-      srcList: [],
       srcList1: [],
-      feature_list: [],
-      feature_list_1: [],
-      feat_list: [],
+      srcList2: [],
+      featureList1: [],
+      featureList2: [],
+      featList: [],
       url: "",
       visible: false,
-      wait_return: "Waiting For Upload...",
-      wait_upload: "Waiting For Upload...",
+      waitReturn: "waiting for upload...",
+      waitUpload: "waiting for upload...",
       loading: false,
       table: false,
-      isNav: false,
-      showbutton: true,
+      showButton: true,
       percentage: 0,
       fullscreenLoading: false,
       opacitys: {
@@ -156,10 +157,10 @@ export default {
     document.title = "Plant Disease Detect";
   },
   methods: {
-    true_upload() {
+    trueUpload1() {
       this.$refs.upload.click();
     },
-    true_upload2() {
+    trueUpload2() {
       this.$refs.upload2.click();
     },
     next() {
@@ -179,63 +180,62 @@ export default {
     update(e) {
       this.percentage = 0;
       this.dialogTableVisible = true;
-      this.url_1 = "";
-      this.url_2 = "";
-      this.srcList = [];
+      this.url1 = "";
+      this.url2 = "";
       this.srcList1 = [];
-      this.wait_return = "";
-      this.wait_upload = "";
-      this.feature_list = [];
-      this.feat_list = [];
+      this.srcList2 = [];
+      this.waitReturn = "";
+      this.waitUpload = "";
+      this.featureList1 = [];
+      this.featList = [];
       this.fullscreenLoading = true;
       this.loading = true;
-      this.showbutton = false;
+      this.showButton = false;
       let file = e.target.files[0];
-      this.url_1 = this.$options.methods.getObjectURL(file);
+      this.url1 = this.$options.methods.getObjectURL(file);
       let param = new FormData();
       param.append("file", file, file.name);
       const timer = setInterval(() => {
-        this.myFunc();
+        this.uFunc();
       }, 30);
       let config = {
         headers: {"Content-Type": "multipart/form-data"},
       };
       axios
-          .post(this.server_url + "/upload", param, config)
+          .post(this.serverUrl + "/upload", param, config)
           .then((response) => {
             this.percentage = 100;
             clearInterval(timer);
-            this.url_1 = response.data.image_url;
-            this.srcList.push(this.url_1);
-            this.url_2 = response.data.draw_url;
-            this.srcList1.push(this.url_2);
+            this.url1 = response.data.image_url;
+            this.srcList1.push(this.url1);
+            this.url2 = response.data.draw_url;
+            this.srcList2.push(this.url2);
             this.fullscreenLoading = false;
             this.loading = false;
-            this.feat_list = Object.keys(response.data.image_info);
-            for (let i = 0; i < this.feat_list.length; i++) {
-              response.data.image_info[this.feat_list[i]][2] = this.feat_list[i];
-              this.feature_list.push(response.data.image_info[this.feat_list[i]]);
+            this.featList = Object.keys(response.data.image_info);
+            for (let i = 0; i < this.featList.length; i++) {
+              response.data.image_info[this.featList[i]][2] = this.featList[i];
+              this.featureList1.push(response.data.image_info[this.featList[i]]);
             }
-            this.feature_list.push(response.data.image_info);
-            this.feature_list_1 = this.feature_list[0];
+            this.featureList1.push(response.data.image_info);
+            this.featureList2 = this.featureList1[0];
             this.dialogTableVisible = false;
             this.percentage = 0;
             this.notice1();
           });
     },
-    myFunc() {
+    uFunc() {
       if (this.percentage + 33 < 99) {
         this.percentage = this.percentage + 33;
       } else {
         this.percentage = 99;
       }
     },
-    drawChart() {
-    },
+    drawChart() {},
     notice1() {
       this.$notify({
-        title: "Predicted Success",
-        message: "Click to view a larger image",
+        title: "Predicted Success!",
+        message: "Click to view larger size",
         duration: 0,
         type: "success",
       });
@@ -270,7 +270,7 @@ p {
   clear: both;
 }
 
-.box-card {
+.box_card {
   width: 680px;
   height: 200px;
   border-radius: 8px;
@@ -287,7 +287,7 @@ p {
   max-width: 1800px;
 }
 
-#CT_image_1 {
+#CT_image1 {
   width: 90%;
   height: 40%;
   /* padding: 0 auto; */
@@ -301,14 +301,14 @@ p {
   margin-top: 5px;
 }
 
-.image_1 {
+.image1 {
   width: 275px;
   height: 260px;
   background: #ffffff;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 }
 
-.img_info_1 {
+.img_info1 {
   height: 30px;
   width: 275px;
   text-align: center;
@@ -316,14 +316,14 @@ p {
   line-height: 30px;
 }
 
-.demo-image__preview1 {
+.demo_image__preview1 {
   width: 250px;
   height: 290px;
   margin: 20px 60px;
   float: left;
 }
 
-.demo-image__preview2 {
+.demo_image__preview2 {
   width: 250px;
   height: 290px;
 
@@ -345,7 +345,7 @@ div {
   padding: 10px 16px !important;
 }
 
-#Content {
+#content {
   width: 85%;
   height: 800px;
   background-color: #ffffff;

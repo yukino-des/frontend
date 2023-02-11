@@ -1,11 +1,11 @@
 <template>
-  <div id="Header">
-    <div class="top-left-edition">
+  <div id="header">
+    <div class="edition">
       <span style="color: #21b3b9; font-weight: bold">
-        <i class="el-icon-star-off" style="font-size: 23px"></i>MobileNetV2 + YOLOv4 (Pytorch)
+        <i class="el-icon-star-off" style="font-size: 23px"></i>MobileNetV2 + YOLOv4
       </span>
       <span>
-        <i style="font-size: 23px"></i>Author: Hang TianCheng
+        <i style="font-size: 23px"></i>Author: github.com/yukino-des
       </span>
     </div>
     <div id="word">
@@ -15,7 +15,7 @@
 </template>
 <script>
 export default {
-  name: "Header",
+  name: "header",
   data() {
     return {
       msg: "Plant Disease Detection",
@@ -26,7 +26,7 @@ export default {
 };
 </script>
 <style scoped>
-#Header {
+#header {
   padding: 30px 110px 0 150px;
   width: 90%;
   margin: 10px auto;
@@ -45,7 +45,7 @@ h1 {
   font-size: 2.3em;
 }
 
-.top-left-edition span i {
+.edition span i {
   float: left;
   margin-right: 10px;
 }
@@ -62,7 +62,7 @@ i {
   cursor: pointer;
 }
 
-.top-left-edition span {
+.edition span {
   float: left;
   font-size: 16px;
   color: #999999;
