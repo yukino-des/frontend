@@ -1,9 +1,13 @@
-# frontend
-```shell
-npm -v # 8.19.3
-node -v # v16.19.0
-```
-Frontend project for plant disease detection
+### frontend
+Frontend project for plant disease detection (node v16.19.0)
+
+1. run frontend projrct
 ```shell
 npm run serve
+```
+
+2. if `address already in use`
+```shell
+lsof -i:8080
+kill -9 {PID}
 ```
