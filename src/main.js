@@ -5,7 +5,6 @@ import axios from 'axios'
 import Element from 'element-ui'
 import echarts from "echarts";
 import '../node_modules/element-ui/lib/theme-chalk/index.css'
-import '../src/assets/style.css'
 import './theme/index.css'
 
 Vue.prototype.$echarts = echarts;

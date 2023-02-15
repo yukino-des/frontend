@@ -1,7 +1,6 @@
 <template>
   <div id="content">
-    <el-dialog title="AI Detecting"
-               :visible.sync="dialogTableVisible"
+    <el-dialog title="AI Detecting" :visible.sync="dialogTableVisible"
                :show-close="false"
                :close-on-press-escape="false"
                :append-to-body="true"
@@ -11,17 +10,16 @@
       <span slot="footer" class="dialog-footer">Please waiting.</span>
     </el-dialog>
     <div id="CT">
-      <div id="CT_image">
-        <el-card id="CT_image1"
-                 class="box_card"
+      <div id="CT_image2">
+        <el-card id="CT_image1" class="box_card"
                  style="border-radius: 8px; width: 800px; height: 360px; margin-bottom: -30px;">
           <!-- left box -->
-          <div class="demo_image__preview1">
+          <div class="demo_image_preview1">
             <div v-loading="loading"
                  element-loading-text="Uploading"
                  element-loading-spinner="el-icon-loading">
               <el-image :src="url1"
-                        class="image1"
+                        class="image"
                         :preview-src-list="srcList1"
                         style="border-radius: 3px 3px 0 0">
                 <div slot="error">
@@ -30,8 +28,7 @@
                                type="primary"
                                icon="el-icon-upload"
                                class="download_bt"
-                               v-on:click="trueUpload1">
-                      Upload
+                               v-on:click="trueUpload1">upload
                       <input ref="upload"
                              style="display: none"
                              name="file"
@@ -42,17 +39,17 @@
                 </div>
               </el-image>
             </div>
-            <div class="img_info1" style="border-radius: 0 0 5px 5px">
-              <span style="color: white">Original</span>
+            <div class="img_info" style="border-radius: 0 0 5px 5px">
+              <span style="color: white">original</span>
             </div>
           </div>
           <!-- right box -->
-          <div class="demo_image__preview2">
+          <div class="demo_image_preview2">
             <div v-loading="loading"
                  element-loading-text="Please be patient."
                  element-loading-spinner="el-icon-loading">
               <el-image :src="url2"
-                        class="image1"
+                        class="image"
                         :preview-src-list="srcList2"
                         style="border-radius: 3px 3px 0 0">
                 <div slot="error">
@@ -60,8 +57,8 @@
                 </div>
               </el-image>
             </div>
-            <div class="img_info1" style="border-radius: 0 0 5px 5px">
-              <span style="color: white">Detection Result</span>
+            <div class="img_info" style="border-radius: 0 0 5px 5px">
+              <span style="color: white">detected</span>
             </div>
           </div>
         </el-card>
@@ -70,37 +67,23 @@
         <el-card style="border-radius: 8px">
           <div slot="header" class="clearfix">
             <span>Detection Details</span>
-            <el-button style="margin-left: 35px"
-                       v-show="!showButton"
-                       type="primary"
-                       icon="el-icon-upload"
-                       class="download_bt"
-                       v-on:click="trueUpload2">
-              Reselect
-              <input ref="upload2"
-                     style="display: none"
-                     name="file"
-                     type="file"
-                     @change="update"/>
+            <el-button style="margin-left: 35px" v-show="!showButton" type="primary" icon="el-icon-upload"
+                       class="download_bt" v-on:click="trueUpload2">Reselect
+              <input ref="upload2" style="display: none" name="file" type="file" @change="update"/>
             </el-button>
           </div>
           <el-tabs v-model="activeName">
             <el-tab-pane label="Detected Targets" name="first">
-              <el-table :data="featureList1"
-                        height="390"
-                        border
-                        style="width: 750px; text-align: center"
-                        v-loading="loading"
-                        element-loading-text="Please be patient."
-                        element-loading-spinner="el-icon-loading"
-                        lazy>
+              <el-table :data="featureList1" height="390" border style="width: 750px; text-align: center"
+                        v-loading="loading" element-loading-text="Please be patient."
+                        element-loading-spinner="el-icon-loading" lazy>
                 <el-table-column label="Target Category" width="250px">
                   <template v-slot:default="scope">
                     <span>{{ scope.row[2] }}</span>
                   </template>
                 </el-table-column>
                 <el-table-column label="Target Size" width="250px">
-                  <!--`v-slot:default` is simplify to `#default`-->
+                  <!--`v-slot:default`, simplify to `#default`-->
                   <template #default="scope">
                     <span>{{ scope.row[0] }}</span>
                   </template>
@@ -196,7 +179,7 @@ export default {
       let param = new FormData();
       param.append("file", file, file.name);
       const timer = setInterval(() => {
-        this.uFunc();
+        this.f();
       }, 30);
       let config = {
         headers: {"Content-Type": "multipart/form-data"},
@@ -221,18 +204,19 @@ export default {
             this.featureList2 = this.featureList1[0];
             this.dialogTableVisible = false;
             this.percentage = 0;
-            this.notice1();
+            this.notice();
           });
     },
-    uFunc() {
+    f() {
       if (this.percentage + 33 < 99) {
         this.percentage = this.percentage + 33;
       } else {
         this.percentage = 99;
       }
     },
-    drawChart() {},
-    notice1() {
+    drawChart() {
+    },
+    notice() {
       this.$notify({
         title: "Predicted Success!",
         message: "Click to view larger size",
@@ -247,12 +231,6 @@ export default {
 };
 </script>
 
-<style>
-p {
-  font-size: 15px !important;
-}
-</style>
-
 <style scoped>
 * {
   box-sizing: border-box;
@@ -260,8 +238,7 @@ p {
   padding: 0;
 }
 
-.clearfix:before,
-.clearfix:after {
+.clearfix:before .clearfix:after {
   display: table;
   content: "";
 }
@@ -290,25 +267,24 @@ p {
 #CT_image1 {
   width: 90%;
   height: 40%;
-  /* padding: 0 auto; */
   margin: 0 180px 0 auto;
   border-radius: 4px;
 }
 
-#CT_image {
+#CT_image2 {
   margin-bottom: 60px;
-  margin-left: 30px;
+  margin-left: 20px;
   margin-top: 5px;
 }
 
-.image1 {
+.image {
   width: 275px;
   height: 260px;
   background: #ffffff;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 }
 
-.img_info1 {
+.img_info {
   height: 30px;
   width: 275px;
   text-align: center;
@@ -316,18 +292,17 @@ p {
   line-height: 30px;
 }
 
-.demo_image__preview1 {
+.demo_image_preview1 {
   width: 250px;
   height: 290px;
-  margin: 20px 60px;
+  margin: 20px 40px;
   float: left;
 }
 
-.demo_image__preview2 {
+.demo_image_preview2 {
   width: 250px;
   height: 290px;
-
-  margin: 20px 460px;
+  margin: 20px 440px;
 }
 
 .error {

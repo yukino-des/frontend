@@ -1,7 +1,7 @@
 ### frontend
 Frontend project for plant disease detection (node v16.19.0)
 
-1. run frontend projrct
+1. run frontend project
 ```shell
 npm run serve
 ```
