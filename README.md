@@ -1,5 +1,5 @@
 ### frontend
-Frontend project for plant disease detection (node v16.19.0)
+Frontend project for plant disease detection (Vue3)
 
 1. run frontend project
 ```shell
