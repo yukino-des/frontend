@@ -1,5 +1,6 @@
-### frontend
-Frontend project for plant disease detection (Vue3)
+# frontend
+
+### Frontend project for plant disease detection (Vue3)
 
 1. run frontend project
 ```shell
