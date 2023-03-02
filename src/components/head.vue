@@ -1,11 +1,11 @@
 <template>
-  <div id="header">
+  <div id="head">
     <h1>{{ msg }}</h1>
   </div>
 </template>
 <script>
 export default {
-  name: "header",
+  name: "head",
   data() {
     return {
       msg: "Plant Disease Detection",
@@ -16,7 +16,7 @@ export default {
 };
 </script>
 <style scoped>
-#header {
+#head {
   padding: 0 0 0 160px;
   width: 50%;
   margin: 10px auto;

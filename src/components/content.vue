@@ -9,9 +9,9 @@
       <el-progress :percentage="percentage"></el-progress>
       <span slot="footer" class="dialog-footer">Please waiting.</span>
     </el-dialog>
-    <div id="CT">
-      <div id="CT_image2">
-        <el-card id="CT_image1" class="box_card"
+    <div id="ct">
+      <div id="ct_image2">
+        <el-card id="ct_image1" class="box_card"
                  style="border-radius: 8px; width: 800px; height: 360px; margin-bottom: -30px;">
           <!-- left box -->
           <div class="demo_image_preview1">
@@ -254,7 +254,7 @@ export default {
   margin-top: -20px;
 }
 
-#CT {
+#ct {
   display: flex;
   height: 100%;
   width: 100%;
@@ -264,14 +264,14 @@ export default {
   max-width: 1800px;
 }
 
-#CT_image1 {
+#ct_image1 {
   width: 90%;
   height: 40%;
   margin: 0 180px 0 auto;
   border-radius: 4px;
 }
 
-#CT_image2 {
+#ct_image2 {
   margin-bottom: 60px;
   margin-left: 20px;
   margin-top: 5px;
