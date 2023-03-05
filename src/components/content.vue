@@ -1,20 +1,19 @@
 <template>
   <div id="content">
-    <el-dialog title="AI Detecting" :visible.sync="dialogTableVisible"
+    <el-dialog title="模型预测中" :visible.sync="dialogTableVisible"
                :show-close="false"
                :close-on-press-escape="false"
                :append-to-body="true"
                :close-on-click-modal="false"
                :center="true">
       <el-progress :percentage="percentage"></el-progress>
-      <span slot="footer" class="dialog-footer">Please waiting.</span>
+      <span slot="footer" class="dialog-footer">请等待</span>
     </el-dialog>
     <div id="ct">
-      <div id="ct_image2">
-        <el-card id="ct_image1" class="box_card"
-                 style="border-radius: 8px; width: 800px; height: 360px; margin-bottom: -30px;">
-          <!-- left box -->
-          <div class="demo_image_preview1">
+      <div id="image1">
+        <el-card id="image0" class="box_card"
+                 style="border-radius: 8px; width: 800px; height: 360px; margin-bottom: -30px">
+          <div class="image_preview0">
             <div v-loading="loading"
                  element-loading-text="Uploading"
                  element-loading-spinner="el-icon-loading">
@@ -25,10 +24,10 @@
                 <div slot="error">
                   <div slot="placeholder" class="error">
                     <el-button v-show="showButton"
-                               type="primary"
+                               type="success"
                                icon="el-icon-upload"
-                               class="download_bt"
-                               v-on:click="trueUpload1">upload
+                               class="d_button"
+                               v-on:click="upload0">上传
                       <input ref="upload"
                              style="display: none"
                              name="file"
@@ -40,11 +39,11 @@
               </el-image>
             </div>
             <div class="img_info" style="border-radius: 0 0 5px 5px">
-              <span style="color: white">original</span>
+              <span style="color: white">原始图像</span>
             </div>
           </div>
           <!-- right box -->
-          <div class="demo_image_preview2">
+          <div class="image_preview1">
             <div v-loading="loading"
                  element-loading-text="Please be patient."
                  element-loading-spinner="el-icon-loading">
@@ -53,49 +52,45 @@
                         :preview-src-list="srcList2"
                         style="border-radius: 3px 3px 0 0">
                 <div slot="error">
-                  <div slot="placeholder" class="error">{{ waitReturn }}</div>
+                  <div slot="placeholder" class="error">等待上传</div>
                 </div>
               </el-image>
             </div>
             <div class="img_info" style="border-radius: 0 0 5px 5px">
-              <span style="color: white">detected</span>
+              <span style="color: white">检测图像</span>
             </div>
           </div>
         </el-card>
       </div>
-      <div id="info_patient">
+      <div id="info">
         <el-card style="border-radius: 8px">
           <div slot="header" class="clearfix">
-            <span>Detection Details</span>
-            <el-button style="margin-left: 35px" v-show="!showButton" type="primary" icon="el-icon-upload"
-                       class="download_bt" v-on:click="trueUpload2">Reselect
+<!--            <el-switch v-model=""></el-switch>-->
+            <el-button style="margin-left: 30px" v-show="!showButton" type="success" icon="el-icon-upload"
+                       class="d_button" v-on:click="upload1">重新选择
               <input ref="upload2" style="display: none" name="file" type="file" @change="update"/>
             </el-button>
           </div>
-          <el-tabs v-model="activeName">
-            <el-tab-pane label="Detected Targets" name="first">
-              <el-table :data="featureList1" height="390" border style="width: 750px; text-align: center"
-                        v-loading="loading" element-loading-text="Please be patient."
-                        element-loading-spinner="el-icon-loading" lazy>
-                <el-table-column label="Target Category" width="250px">
-                  <template v-slot:default="scope">
-                    <span>{{ scope.row[2] }}</span>
-                  </template>
-                </el-table-column>
-                <el-table-column label="Target Size" width="250px">
-                  <!--`v-slot:default`, simplify to `#default`-->
-                  <template #default="scope">
-                    <span>{{ scope.row[0] }}</span>
-                  </template>
-                </el-table-column>
-                <el-table-column label="Confidence" width="250px">
-                  <template #default="scope">
-                    <span>{{ scope.row[1] }}</span>
-                  </template>
-                </el-table-column>
-              </el-table>
-            </el-tab-pane>
-          </el-tabs>
+          <el-table :data="featureList1" height="400" border style="width: 750px; text-align: center"
+                    v-loading="loading" element-loading-text="请等待"
+                    element-loading-spinner="el-icon-loading" lazy>
+            <el-table-column label="目标种类" width="250px">
+              <template v-slot:default="scope">
+                <span>{{ scope.row[2] }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="目标边界框" width="250px">
+              <template #default="scope">
+                <span>{{ scope.row[0] }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="目标置信度" width="250px">
+              <template #default="scope">
+                <span>{{ scope.row[1] }}</span>
+              </template>
+            </el-table-column>
+          </el-table>
+
         </el-card>
       </div>
     </div>
@@ -103,19 +98,16 @@
 </template>
 
 <script>
-import axios from "axios";
+import axios from "axios"
 
 export default {
   name: "content",
   data() {
     return {
-      serverUrl: "http://127.0.0.1:8081",
-      activeName: "first",
+      serverUrl: "http://0.0.0.0:8081",
       active: 0,
-      centerDialogVisible: true,
       url1: "",
       url2: "",
-      textarea: "",
       srcList1: [],
       srcList2: [],
       featureList1: [],
@@ -123,112 +115,102 @@ export default {
       featList: [],
       url: "",
       visible: false,
-      waitReturn: "waiting for upload...",
-      waitUpload: "waiting for upload...",
       loading: false,
       table: false,
       showButton: true,
       percentage: 0,
       fullscreenLoading: false,
-      opacitys: {
-        opacity: 0,
-      },
       dialogTableVisible: false,
-    };
+    }
   },
   created: function () {
-    document.title = "Plant Disease Detect";
+    document.title = "农作物病虫害检测"
   },
   methods: {
-    trueUpload1() {
-      this.$refs.upload.click();
+    upload0() {
+      this.$refs.upload.click()
     },
-    trueUpload2() {
-      this.$refs.upload2.click();
+    upload1() {
+      this.$refs.upload2.click()
     },
     next() {
-      this.active++;
+      this.active++
     },
     getObjectURL(file) {
-      let url = null;
+      let url = null
       if (window.createObjcectURL !== undefined) {
-        url = window.createOjcectURL(file);
+        url = window.createOjcectURL(file)
       } else if (window.URL !== undefined) {
-        url = window.URL.createObjectURL(file);
+        url = window.URL.createObjectURL(file)
       } else if (window.webkitURL !== undefined) {
-        url = window.webkitURL.createObjectURL(file);
+        url = window.webkitURL.createObjectURL(file)
       }
-      return url;
+      return url
     },
     update(e) {
-      this.percentage = 0;
-      this.dialogTableVisible = true;
-      this.url1 = "";
-      this.url2 = "";
-      this.srcList1 = [];
-      this.srcList2 = [];
-      this.waitReturn = "";
-      this.waitUpload = "";
-      this.featureList1 = [];
-      this.featList = [];
-      this.fullscreenLoading = true;
-      this.loading = true;
-      this.showButton = false;
-      let file = e.target.files[0];
-      this.url1 = this.$options.methods.getObjectURL(file);
-      let param = new FormData();
-      param.append("file", file, file.name);
+      this.percentage = 0
+      this.dialogTableVisible = true
+      this.url1 = ""
+      this.url2 = ""
+      this.srcList1 = []
+      this.srcList2 = []
+      this.featureList1 = []
+      this.featList = []
+      this.fullscreenLoading = true
+      this.loading = true
+      this.showButton = false
+      let file = e.target.files[0]
+      this.url1 = this.$options.methods.getObjectURL(file)
+      let param = new FormData()
+      param.append("file", file, file.name)
       const timer = setInterval(() => {
-        this.f();
-      }, 30);
+        this.f()
+      }, 30)
       let config = {
         headers: {"Content-Type": "multipart/form-data"},
-      };
+      }
       axios
-          .post(this.serverUrl + "/upload", param, config)
+          .post(this.serverUrl + "/frontend/" + this.mode, param, config)
           .then((response) => {
-            this.percentage = 100;
-            clearInterval(timer);
-            this.url1 = response.data.image_url;
-            this.srcList1.push(this.url1);
-            this.url2 = response.data.draw_url;
-            this.srcList2.push(this.url2);
-            this.fullscreenLoading = false;
-            this.loading = false;
-            this.featList = Object.keys(response.data.image_info);
+            this.percentage = 100
+            clearInterval(timer)
+            this.url1 = response.data.image_url
+            this.srcList1.push(this.url1)
+            this.url2 = response.data.draw_url
+            this.srcList2.push(this.url2)
+            this.fullscreenLoading = false
+            this.loading = false
+            this.featList = Object.keys(response.data.image_info)
             for (let i = 0; i < this.featList.length; i++) {
-              response.data.image_info[this.featList[i]][2] = this.featList[i];
-              this.featureList1.push(response.data.image_info[this.featList[i]]);
+              response.data.image_info[this.featList[i]][2] = this.featList[i]
+              this.featureList1.push(response.data.image_info[this.featList[i]])
             }
-            this.featureList1.push(response.data.image_info);
-            this.featureList2 = this.featureList1[0];
-            this.dialogTableVisible = false;
-            this.percentage = 0;
-            this.notice();
-          });
+            this.featureList1.push(response.data.image_info)
+            this.featureList2 = this.featureList1[0]
+            this.dialogTableVisible = false
+            this.percentage = 0
+            this.notice()
+          })
     },
     f() {
       if (this.percentage + 33 < 99) {
-        this.percentage = this.percentage + 33;
+        this.percentage = this.percentage + 33
       } else {
-        this.percentage = 99;
+        this.percentage = 99
       }
-    },
-    drawChart() {
     },
     notice() {
       this.$notify({
-        title: "Predicted Success!",
-        message: "Click to view larger size",
-        duration: 0,
+        title: "检测成功！",
+        message: "点击查看大图",
+        duration: 3000,
         type: "success",
-      });
+      })
     },
   },
   mounted() {
-    this.drawChart();
   },
-};
+}
 </script>
 
 <style scoped>
@@ -264,14 +246,14 @@ export default {
   max-width: 1800px;
 }
 
-#ct_image1 {
+#image0 {
   width: 90%;
   height: 40%;
   margin: 0 180px 0 auto;
   border-radius: 4px;
 }
 
-#ct_image2 {
+#image1 {
   margin-bottom: 60px;
   margin-left: 20px;
   margin-top: 5px;
@@ -280,7 +262,7 @@ export default {
 .image {
   width: 275px;
   height: 260px;
-  background: #ffffff;
+  background: white;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 }
 
@@ -288,18 +270,18 @@ export default {
   height: 30px;
   width: 275px;
   text-align: center;
-  background-color: #21b3b9;
+  background-color: dodgerblue;
   line-height: 30px;
 }
 
-.demo_image_preview1 {
+.image_preview0 {
   width: 250px;
   height: 290px;
   margin: 20px 40px;
   float: left;
 }
 
-.demo_image_preview2 {
+.image_preview1 {
   width: 250px;
   height: 290px;
   margin: 20px 440px;
@@ -316,20 +298,20 @@ div {
   display: block;
 }
 
-.download_bt {
+.d_button {
   padding: 10px 16px !important;
 }
 
 #content {
   width: 85%;
   height: 800px;
-  background-color: #ffffff;
+  background-color: white;
   margin: 15px auto;
   display: flex;
   min-width: 1200px;
 }
 
-#info_patient {
+#info {
   margin-top: 10px;
   margin-right: 160px;
 }

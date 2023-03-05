@@ -10,7 +10,7 @@ import head from "./components/head";
 import content from "./components/content";
 
 export default {
-  name: "PlantDiseaseDetection",
+  name: "农作物病虫害检测",
   data() {
     return {};
   },

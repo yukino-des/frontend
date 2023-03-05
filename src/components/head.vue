@@ -1,6 +1,6 @@
 <template>
   <div id="head">
-    <h1>{{ msg }}</h1>
+    <h1>{{ head }}</h1>
   </div>
 </template>
 <script>
@@ -8,8 +8,7 @@ export default {
   name: "head",
   data() {
     return {
-      msg: "Plant Disease Detection",
-      activeIndex: "1",
+      head: "农作物病虫害检测",
     };
   },
   methods: {},
@@ -20,10 +19,6 @@ export default {
   padding: 0 0 0 160px;
   width: 50%;
   margin: 10px auto;
-}
-
-h1 {
-  color: #21b3b9;
-  font-size: 2.3em;
+  font-size: 1.2em;
 }
 </style>
