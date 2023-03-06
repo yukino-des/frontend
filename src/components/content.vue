@@ -65,7 +65,7 @@
       <div id="info">
         <el-card style="border-radius: 8px">
           <div slot="header" class="clearfix">
-<!--            <el-switch v-model=""></el-switch>-->
+            <span>检测结果</span>
             <el-button style="margin-left: 30px" v-show="!showButton" type="success" icon="el-icon-upload"
                        class="d_button" v-on:click="upload1">重新选择
               <input ref="upload2" style="display: none" name="file" type="file" @change="update"/>
@@ -90,7 +90,6 @@
               </template>
             </el-table-column>
           </el-table>
-
         </el-card>
       </div>
     </div>
@@ -169,8 +168,7 @@ export default {
       let config = {
         headers: {"Content-Type": "multipart/form-data"},
       }
-      axios
-          .post(this.serverUrl + "/frontend/" + this.mode, param, config)
+      axios.post(this.serverUrl + "/image", param, config)
           .then((response) => {
             this.percentage = 100
             clearInterval(timer)
@@ -206,7 +204,7 @@ export default {
         duration: 3000,
         type: "success",
       })
-    },
+    }
   },
   mounted() {
   },
