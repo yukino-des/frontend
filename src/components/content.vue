@@ -3,7 +3,7 @@
     <h1 style="font-size: 3em">农业病虫害检测</h1>
     <el-card shadow="always">
       <div slot="header">
-        <el-button type="success" v-on:click="preUpload">上传图像、视频
+        <el-button type="success" v-on:click="preUpload">上传图像、视频、压缩包
           <input ref="upload" style="display: none" type="file" @change="upload"/>
         </el-button>
         <el-button type="error" v-on:click="download('model.pth')">下载权值</el-button>
@@ -77,18 +77,18 @@ export default {
       axios.post(this.url + "/image", param, {
         headers: {"Content-Type": "multipart/form-data"},
       }).then((response) => {
-        this.urlL = response.data.imgUrl
-        this.urlM = response.data.imgOutUrl
-        this.urlR = response.data.imgHmUrl
+        this.urlL = response.data.imageUrl
+        this.urlM = response.data.imageOutUrl
+        this.urlR = response.data.imageHeatmapUrl
         this.arrL.push(this.urlL)
         this.arrM.push(this.urlM)
         this.arrR.push(this.urlR)
         // window.console.log(this.urlR)
-        let classes = Object.keys(response.data.imageInfo)
+        let classes = Object.keys(response.data.targetInfo)
         this.infoArr = []
         for (let i = 0; i < classes.length; i++) {
-          response.data.imageInfo[classes[i]][2] = classes[i]
-          this.infoArr.push(response.data.imageInfo[classes[i]])
+          response.data.targetInfo[classes[i]][2] = classes[i]
+          this.infoArr.push(response.data.targetInfo[classes[i]])
         }
         this.notice()
       })
