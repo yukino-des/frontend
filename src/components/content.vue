@@ -3,12 +3,12 @@
     <h1 style="font-size: 3em">农业病虫害检测</h1>
     <el-card shadow="always">
       <div slot="header">
-        <el-button type="success" v-on:click="preUpload">上传图像、视频、压缩包
+        <el-button type="success" v-on:click="preUpload">上传图像、视频
           <input ref="upload" style="display: none" type="file" @change="upload"/>
         </el-button>
-        <el-button type="error" v-on:click="download('model.pth')">下载权值</el-button>
-        <el-button type="error" v-on:click="download('model.onnx')">下载模型</el-button>
-        <el-button type="error" v-on:click="download('summary.txt')">下载summary</el-button>
+        <el-button type="warning" v-on:click="download('data/model.pth', {})">下载权值</el-button>
+        <el-button type="warning" v-on:click="download('data/model.onnx', {})">下载模型</el-button>
+        <el-button type="warning" v-on:click="download('data/summary.txt', {})">下载summary</el-button>
       </div>
       <el-card shadow="always">
         <el-row type="flex" justify="center">
@@ -51,7 +51,7 @@ export default {
   name: "content",
   data() {
     return {
-      url: "http://0.0.0.0:8080",
+      url: "http://0.0.0.0:2475/", // 后端服务器监听2475号端口
       urlL: "",
       urlM: "",
       urlR: "",
@@ -65,51 +65,67 @@ export default {
     document.title = "农作物病虫害检测"
   },
   methods: {
+
     preUpload() { // 上传图像、视频
       this.$refs.upload.click()
     },
-    upload(e) {
-      let file = e.target.files[0]
-      if (window.URL !== undefined) this.urlL = window.URL.createObjectURL(file)
-      else this.urlL = window.webkitURL.createObjectURL(file)
+
+    upload(e) { // 上传图像、视频
+      const file = e.target.files[0]
       let param = new FormData()
       param.append("file", file, file.name)
-      axios.post(this.url + "/image", param, {
-        headers: {"Content-Type": "multipart/form-data"},
-      }).then((response) => {
-        this.urlL = response.data.imageUrl
-        this.urlM = response.data.imageOutUrl
-        this.urlR = response.data.imageHeatmapUrl
-        this.arrL.push(this.urlL)
-        this.arrM.push(this.urlM)
-        this.arrR.push(this.urlR)
-        // window.console.log(this.urlR)
-        let classes = Object.keys(response.data.targetInfo)
-        this.infoArr = []
-        for (let i = 0; i < classes.length; i++) {
-          response.data.targetInfo[classes[i]][2] = classes[i]
-          this.infoArr.push(response.data.targetInfo[classes[i]])
-        }
-        this.notice()
-      })
+      const arr = file.name.toLowerCase().split(".")
+      const extend_name = arr[arr.length - 1]
+      if (extend_name === "jpg" || extend_name === "jpeg" || extend_name === "png") {
+        axios.post(this.url + "file", param, {
+          headers: {"Content-Type": "multipart/form-data"},
+        }).then((response) => {
+          this.urlL = response.data.imageUrl
+          this.urlM = response.data.imageOutUrl
+          this.urlR = response.data.imageHeatmapUrl
+          this.arrL.push(this.urlL)
+          this.arrM.push(this.urlM)
+          this.arrR.push(this.urlR)
+          let classes = Object.keys(response.data.targetInfo)
+          this.infoArr = []
+          for (let i = 0; i < classes.length; i++) {
+            response.data.targetInfo[classes[i]][2] = classes[i]
+            this.infoArr.push(response.data.targetInfo[classes[i]])
+          }
+          this.$notify({title: "检测成功", message: "点击查看图像", duration: 3000})
+        })
+      } else if (extend_name === "avi" || extend_name === "mov" || extend_name === "mp4") {
+        axios.post(this.url + "file", param, {
+          headers: {"Content-Type": "multipart/form-data"},
+        }).then((response) => {
+          window.console.log(response.data)
+          this.download(response.data.videoPath, {
+            responseType: 'blob', // responseType设置为blob二进制流类型
+          })
+        })
+      } else {
+        this.$notify({title: "上传失败", message: "文件格式错误", duration: 3000})
+      }
     },
-    notice() {
-      this.$notify({title: "检测成功", message: "点击查看大图", duration: 3000})
-    },
-    download(filename) {
-      axios.get(this.url + "/data/" + filename).then((response) => {
+
+    download(filePath, config) {
+      const arr = filePath.split('/')
+      const filename = arr[arr.length - 1]
+      axios.get(this.url + filePath, config).then((response) => {
         const blob = new Blob([response.data])
-        const elink = document.createElement('a')
-        elink.download = filename
-        elink.style.display = "none"
-        elink.href = URL.createObjectURL(blob)
-        document.body.appendChild(elink)
-        elink.click()
-        URL.revokeObjectURL(elink.href)
-        document.body.removeChild(elink)
+        const eLink = document.createElement('a')
+        eLink.download = filename
+        eLink.style.display = "none"
+        eLink.href = URL.createObjectURL(blob)
+        document.body.appendChild(eLink)
+        eLink.click()
+        URL.revokeObjectURL(eLink.href)
+        document.body.removeChild(eLink)
       }).catch((err) => {
         window.console.log(err)
+        this.$notify({title: "下载失败", message: filename, duration: 3000})
       })
+      this.$notify({title: "下载成功", message: filename, duration: 3000})
     },
   }
 }
