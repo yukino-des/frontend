@@ -8,13 +8,9 @@
 import content from "./components/content"
 
 export default {
-  name: "农业病虫害检测",
-  data() {
-    return {}
-  },
+  name: "PlantDiseaseDetection",
   components: {
     "app-content": content
   },
-  methods: {}
 }
 </script>

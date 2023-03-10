@@ -1,14 +1,14 @@
 <template>
   <div id="content">
-    <h1 style="font-size: 3em">农业病虫害检测</h1>
+    <h1 style="font-size: 3em; text-align: center">农业病虫害检测</h1>
     <el-card shadow="always">
       <div slot="header">
         <el-button type="success" v-on:click="preUpload">上传图像、视频
           <input ref="upload" style="display: none" type="file" @change="upload"/>
         </el-button>
         <el-button type="warning" v-on:click="download('data/model.pth', {})">下载权值</el-button>
-        <el-button type="warning" v-on:click="download('data/model.onnx', {})">下载模型</el-button>
-        <el-button type="warning" v-on:click="download('data/summary.txt', {})">下载summary</el-button>
+        <el-button type="warning" v-on:click="download('data/cache/model.onnx', {})">下载模型</el-button>
+        <el-button type="warning" v-on:click="download('data/cache/summary.txt', {})">下载summary</el-button>
       </div>
       <el-card shadow="always">
         <el-row type="flex" justify="center">
@@ -62,10 +62,9 @@ export default {
     }
   },
   created: function () {
-    document.title = "农作物病虫害检测"
+    document.title = "农业病虫害检测"
   },
   methods: {
-
     preUpload() { // 上传图像、视频
       this.$refs.upload.click()
     },
@@ -100,7 +99,7 @@ export default {
         }).then((response) => {
           window.console.log(response.data)
           this.download(response.data.videoPath, {
-            responseType: 'blob', // responseType设置为blob二进制流类型
+            responseType: "blob", // responseType设置为blob二进制流类型
           })
         })
       } else {
@@ -109,11 +108,11 @@ export default {
     },
 
     download(filePath, config) {
-      const arr = filePath.split('/')
+      const arr = filePath.split("/")
       const filename = arr[arr.length - 1]
       axios.get(this.url + filePath, config).then((response) => {
         const blob = new Blob([response.data])
-        const eLink = document.createElement('a')
+        const eLink = document.createElement("a")
         eLink.download = filename
         eLink.style.display = "none"
         eLink.href = URL.createObjectURL(blob)
