@@ -58,7 +58,7 @@ export default {
       arrL: [],
       arrM: [],
       arrR: [],
-      infoArr: [],
+      infoArr: []
     }
   },
   created: function () {
@@ -77,7 +77,7 @@ export default {
       const extend_name = arr[arr.length - 1]
       if (extend_name === "jpg" || extend_name === "jpeg" || extend_name === "png") {
         axios.post(this.url + "file", param, {
-          headers: {"Content-Type": "multipart/form-data"},
+          headers: {"Content-Type": "multipart/form-data"}
         }).then((response) => {
           this.urlL = response.data.imageUrl
           this.urlM = response.data.imageOutUrl
@@ -95,11 +95,11 @@ export default {
         })
       } else if (extend_name === "avi" || extend_name === "mov" || extend_name === "mp4") {
         axios.post(this.url + "file", param, {
-          headers: {"Content-Type": "multipart/form-data"},
+          headers: {"Content-Type": "multipart/form-data"}
         }).then((response) => {
           window.console.log(response.data)
           this.download(response.data.videoPath, {
-            responseType: "blob", // responseType设置为blob二进制流类型
+            responseType: "blob" // responseType设置为blob二进制流类型
           })
         })
       } else {
@@ -110,6 +110,7 @@ export default {
     download(filePath, config) {
       const arr = filePath.split("/")
       const filename = arr[arr.length - 1]
+      let title = "下载成功"
       axios.get(this.url + filePath, config).then((response) => {
         const blob = new Blob([response.data])
         const eLink = document.createElement("a")
@@ -121,11 +122,12 @@ export default {
         URL.revokeObjectURL(eLink.href)
         document.body.removeChild(eLink)
       }).catch((err) => {
-        window.console.log(err)
-        this.$notify({title: "下载失败", message: filename, duration: 3000})
+        window.console.log(err === null)
+        title = "下载失败"
+      }).finally(() => {
+        this.$notify({"title": title, "message": filename, "duration": 3000})
       })
-      this.$notify({title: "下载成功", message: filename, duration: 3000})
-    },
+    }
   }
 }
 </script>
