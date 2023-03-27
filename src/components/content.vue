@@ -25,7 +25,7 @@
                 :cell-style="{'text-align':'center'}" element-loading-text="请等待"
                 element-loading-spinner="el-icon-loading" lazy>
         <el-table-column label="目标种类">
-          <template v-slot:default="scope">
+          <template #default="scope">
             <span>{{ scope.row[2] }}</span>
           </template>
         </el-table-column>
