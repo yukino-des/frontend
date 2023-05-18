@@ -1,6 +1,6 @@
 <template>
   <div id="content">
-    <h1 style="font-size: 3em; text-align: center">农业病虫害检测</h1>
+    <h1 style="font-size: 3em; text-align: center">农业病害检测</h1>
     <el-card shadow="always">
       <div slot="header">
         <el-button type="success" v-on:click="preUpload">上传图像、视频
@@ -24,12 +24,12 @@
       <el-table :data="infoArr" border style="width: 100%" :header-cell-style="{'text-align':'center'}"
                 :cell-style="{'text-align':'center'}" element-loading-text="请等待"
                 element-loading-spinner="el-icon-loading" lazy>
-        <el-table-column label="目标种类">
+        <el-table-column label="类别">
           <template #default="scope">
             <span>{{ scope.row[2] }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="目标置信度">
+        <el-table-column label="置信度">
           <template #default="scope">
             <span>{{ scope.row[1] }}</span>
           </template>
@@ -62,7 +62,7 @@ export default {
     }
   },
   created: function () {
-    document.title = "农业病虫害检测"
+    document.title = "农业病害检测"
   },
   methods: {
     preUpload() { // 上传图像、视频
