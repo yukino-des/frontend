@@ -1,21 +1,17 @@
 <template>
   <div id="content">
-    <h1 style="font-size: 3em; text-align: center">农业病害检测</h1>
+
     <el-card shadow="always">
       <div slot="header">
-        <el-button type="success" v-on:click="preUpload">上传图像、视频
+        基于MobileNet v2和YOLO v3的农业病害检测模型
+        <el-button type="success" v-on:click="preUpload">上传图像或视频
           <input ref="upload" style="display: none" type="file" @change="upload"/>
         </el-button>
-        <el-button type="warning" v-on:click="download('data/model.pth', {})">下载权值</el-button>
-        <el-button type="warning" v-on:click="download('data/cache/model.onnx', {})">下载模型</el-button>
-        <el-button type="warning" v-on:click="download('data/cache/summary.txt', {})">下载summary</el-button>
       </div>
       <el-card shadow="always">
         <el-row type="flex" justify="center">
           <!-- 左图像框 -->
           <el-image :src="urlL" class="image" :preview-src-list="arrL"></el-image>
-          <!-- 中图像框 -->
-          <el-image :src="urlM" class="image" :preview-src-list="arrM"></el-image>
           <!-- 右图像框 -->
           <el-image :src="urlR" class="image" :preview-src-list="arrR"></el-image>
         </el-row>
@@ -53,10 +49,8 @@ export default {
     return {
       url: "http://0.0.0.0:2475/", // 后端服务器监听2475号端口
       urlL: "",
-      urlM: "",
       urlR: "",
       arrL: [],
-      arrM: [],
       arrR: [],
       infoArr: []
     }
@@ -80,10 +74,8 @@ export default {
           headers: {"Content-Type": "multipart/form-data"}
         }).then((response) => {
           this.urlL = response.data.imageUrl
-          this.urlM = response.data.imageOutUrl
-          this.urlR = response.data.imageHeatmapUrl
+          this.urlR = response.data.imageOutUrl
           this.arrL.push(this.urlL)
-          this.arrM.push(this.urlM)
           this.arrR.push(this.urlR)
           let classes = Object.keys(response.data.targetInfo)
           this.infoArr = []
@@ -91,7 +83,7 @@ export default {
             response.data.targetInfo[classes[i]][2] = classes[i]
             this.infoArr.push(response.data.targetInfo[classes[i]])
           }
-          this.$notify({title: "检测成功", message: "点击查看图像", duration: 3000})
+          this.$notify({title: "检测成功", message: "点击查看大图", duration: 3000})
         })
       } else if (extend_name === "avi" || extend_name === "mov" || extend_name === "mp4") {
         axios.post(this.url + "file", param, {
@@ -142,7 +134,7 @@ export default {
 .image {
   width: 400px;
   height: 400px;
-  border: 3px solid pink;
+  border: 3px solid lightseagreen;
   border-radius: 30px;
   margin: 20px;
 }
