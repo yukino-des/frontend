@@ -2,8 +2,8 @@
   <div id="content">
     <el-card shadow="always">
       <div slot="header">
-        农业病虫害检测
-        <el-button type="success" v-on:click="preUpload">上传图像/视频
+        Plant Disease Detection
+        <el-button type="success" v-on:click="preUpload">upload image / video
           <input ref="upload" style="display: none" type="file" @change="upload"/>
         </el-button>
       </div>
@@ -15,17 +15,17 @@
       </el-card>
       <el-table :data="infoArr" border style="width: 100%" :header-cell-style="{'text-align':'center'}"
                 :cell-style="{'text-align':'center'}">
-        <el-table-column label="类别">
+        <el-table-column label="class">
           <template #default="scope">
             <span>{{ scope.row[2] }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="置信度">
+        <el-table-column label="confidence">
           <template #default="scope">
             <span>{{ scope.row[1] }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="边界框尺寸">
+        <el-table-column label="bbox">
           <template #default="scope">
             <span>{{ scope.row[0] }}</span>
           </template>
@@ -42,7 +42,7 @@ export default {
   name: "content",
   data() {
     return {
-      url: "http://0.0.0.0:2475/",
+      url: "http://0.0.0.0:2022/",
       urlL: "",
       urlR: "",
       arrL: [],
@@ -51,7 +51,7 @@ export default {
     }
   },
   created: function () {
-    document.title = "农业病虫害检测"
+    document.title = "PlantDiseaseDetection"
   },
   methods: {
     preUpload() {
@@ -78,7 +78,7 @@ export default {
             response.data.targetInfo[classes[i]][2] = classes[i]
             this.infoArr.push(response.data.targetInfo[classes[i]])
           }
-          this.$notify({title: "检测成功", message: "点击查看大图", duration: 3000})
+          this.$notify({title: "succeeded", message: "click to view", duration: 3000})
         })
       } else if (extend_name === "avi" || extend_name === "mov" || extend_name === "mp4") {
         axios.post(this.url + "file", param, {
@@ -90,14 +90,14 @@ export default {
           })
         })
       } else {
-        this.$notify({title: "上传失败", message: "文件格式错误", duration: 3000})
+        this.$notify({title: "failed", message: "file format error", duration: 3000})
       }
     },
 
     download(filePath, config) {
       const arr = filePath.split("/")
       const filename = arr[arr.length - 1]
-      let title = "下载成功"
+      let title = "succeeded"
       axios.get(this.url + filePath, config).then((response) => {
         const blob = new Blob([response.data])
         const eLink = document.createElement("a")
@@ -110,7 +110,7 @@ export default {
         document.body.removeChild(eLink)
       }).catch((err) => {
         window.console.log(err === null)
-        title = "下载失败"
+        title = "failed"
       }).finally(() => {
         this.$notify({"title": title, "message": filename, "duration": 3000})
       })

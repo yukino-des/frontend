@@ -9,7 +9,7 @@ Vue.config.productionTip = false
 Vue.use(Element)
 Vue.use(VueRouter)
 const router = new VueRouter({
-    routes: [{path: "/App", component: App, meta: {title: "农业病虫害检测"},},], mode: "history"
+    routes: [{path: "/App", component: App, meta: {title: "Plant Disease Detection"},},], mode: "history"
 })
 Vue.component("App", App)
 new Vue({
