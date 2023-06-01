@@ -1,4 +1,4 @@
-# 农业病害检测前端
+# Plant Disease Detection Frontend
 
 ```shell
 npm install

@@ -2,23 +2,19 @@
   <div id="content">
     <el-card shadow="always">
       <div slot="header">
-        基于MobileNet v2和YOLO v3的农业病害检测模型
-        <el-button type="success" v-on:click="preUpload">上传图像或视频
+        农业病虫害检测
+        <el-button type="success" v-on:click="preUpload">上传图像/视频
           <input ref="upload" style="display: none" type="file" @change="upload"/>
         </el-button>
       </div>
       <el-card shadow="always">
         <el-row type="flex" justify="center">
-          <!-- 左图像框 -->
           <el-image :src="urlL" class="image" :preview-src-list="arrL"></el-image>
-          <!-- 右图像框 -->
           <el-image :src="urlR" class="image" :preview-src-list="arrR"></el-image>
         </el-row>
       </el-card>
-      <!-- 检测结果 -->
       <el-table :data="infoArr" border style="width: 100%" :header-cell-style="{'text-align':'center'}"
-                :cell-style="{'text-align':'center'}" element-loading-text="请等待"
-                element-loading-spinner="el-icon-loading" lazy>
+                :cell-style="{'text-align':'center'}">
         <el-table-column label="类别">
           <template #default="scope">
             <span>{{ scope.row[2] }}</span>
@@ -46,7 +42,7 @@ export default {
   name: "content",
   data() {
     return {
-      url: "http://0.0.0.0:2475/", // 后端服务器监听2475号端口
+      url: "http://0.0.0.0:2475/",
       urlL: "",
       urlR: "",
       arrL: [],
@@ -55,14 +51,14 @@ export default {
     }
   },
   created: function () {
-    document.title = "农业病害检测"
+    document.title = "农业病虫害检测"
   },
   methods: {
-    preUpload() { // 上传图像、视频
+    preUpload() {
       this.$refs.upload.click()
     },
 
-    upload(e) { // 上传图像、视频
+    upload(e) {
       const file = e.target.files[0]
       let param = new FormData()
       param.append("file", file, file.name)
@@ -90,7 +86,7 @@ export default {
         }).then((response) => {
           window.console.log(response.data)
           this.download(response.data.videoPath, {
-            responseType: "blob" // responseType设置为blob二进制流类型
+            responseType: "blob"
           })
         })
       } else {
