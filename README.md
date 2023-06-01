@@ -1,7 +1,7 @@
 # Plant Disease Detection Frontend
 
 ```shell
-npm install
+npm install --force
 ```
 
 ```shell
